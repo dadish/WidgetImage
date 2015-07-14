@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * WidgetImage - An image renderer.
+ *
+ *
+ */
+
+class WidgetImage extends Widget implements Module {
+
+  /**
+   * getModuleInfo is a module required by all modules to tell ProcessWire about them
+   *
+   * @return array
+   *
+   */
+  public static function getModuleInfo() {
+    return array(
+      'title' => 'Widget Image', 
+      'version' => 001, 
+      'summary' => _('An image renderer.'),
+      'icon' => 'cubes',
+      'requires' => array('Widgets')
+      );
+  }
+
+  public static function getDefaultSettings()
+  {
+    return array(
+      'image_field' => 'images',
+      'link_image' => 0
+      );
+  }
+
+  protected function getFieldOptions($type = '')
+  {
+    $arr = array();
+    foreach ($this->fields as $field) {
+      if (!$type) $arr[$field->name] = $field->get('labal|name');
+      else if ($type === (string) $field->type) $arr[$field->name] = $field->get('label|name');
+    }
+    return $arr;
+  }
+
+  public function setArray(array $arr)
+  {
+    parent::setArray($arr);
+    $settings = array_merge(self::getDefaultSettings(), $this->settings->getArray());
+    $this->settings->setArray($settings);
+  }
+
+  public function getSettingsFields($multipleRenders = false)
+  {
+    $fields = parent::getSettingsFields($multipleRenders);
+
+    $field = $this->modules->get('InputfieldSelect');
+    $field->name = 'image_field';
+    $field->label = $this->_('Image Field');
+    $field->attr('value', $this->settings->image_field);
+    $field->addOptions($this->getFieldOptions());
+    $fields->add($field);
+
+    $field = $this->modules->get('InputfieldInteger');
+    $field->name = 'image_width';
+    $field->label = $this->_('Image Width');
+    $field->attr('value', $this->settings->image_width);
+    $field->columnWidth = 50;
+    $fields->add($field);
+
+    $field = $this->modules->get('InputfieldInteger');
+    $field->name = 'image_height';
+    $field->label = $this->_('Image Height');
+    $field->attr('value', $this->settings->image_height);
+    $field->columnWidth = 50;
+    $fields->add($field);
+
+    $field = $this->modules->get('InputfieldCheckbox');
+    $field->name = 'link_image';
+    $field->label = 'Link Image';
+    $field->attr('checked', $this->settings->link_image);
+    $field->description = $this->_('Check this if you want to link the image to it\'s Page.');
+    $fields->add($field);
+
+    return $fields;
+  }
+
+  public function processSettingsFields(InputfieldWrapper $settings)
+  {
+    parent::processSettingsFields($settings);
+    $this->settings->image_field = $settings->get('image_field')->value;
+    $this->settings->image_width = $settings->get('image_width')->value;
+    $this->settings->image_height = $settings->get('image_height')->value;
+    $this->settings->link_image = $settings->get('link_image')->value;
+  }
+}

@@ -1,0 +1,13 @@
+.WidgetImage{
+  text-align: center;
+}
+
+.WidgetImage img{
+  display: inline-block;
+  max-width : 100%;
+}
+
+.WidgetImage .wrapper{
+  padding : 1rem;
+  display: block;
+}
