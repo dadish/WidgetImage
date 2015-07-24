@@ -4,7 +4,7 @@ $p = ($renderPages->count()) ? $renderPages->first() : wire('page');
 
 $p->of(false);
 $imgs = $p->get($settings->image_field);
-if ($imgs instanceof PageImages && $imgs->count()) $img = $imgs->first();
+if ($imgs instanceof Pageimages && $imgs->count()) $img = $imgs->first();
 else $img = null;
 
 if (is_null($img)) return "Could not get the Image";
